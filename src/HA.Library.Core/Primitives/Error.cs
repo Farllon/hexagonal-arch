@@ -1,15 +1,43 @@
-﻿namespace HA.Library.Core.Primitives
+namespace HA.Library.Core.Primitives
 {
-    public class Error
+    /// <summary>
+    /// Represents a concrete domain error.
+    /// </summary>
+    public sealed class Error : ValueObject
     {
-        public string Code { get; private set; }
+        /// <summary>
+        /// Gets the error code.
+        /// </summary>
+        public string Code { get; }
 
-        public string Message { get; private set; }
+        /// <summary>
+        /// Gets the error message.
+        /// </summary>
+        public string Message { get; }
 
+        /// <summary>
+        /// Gets the empty error instance.
+        /// </summary>
+        internal static Error None => new Error(string.Empty, string.Empty);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Error"/> class.
+        /// </summary>
+        /// <param name="code">The error code.</param>
+        /// <param name="message">The error message.</param>
         public Error(string code, string message)
         {
             Code = code;
             Message = message;
+        }
+
+        public static implicit operator string(Error error) => error?.Code ?? string.Empty;
+
+        /// <inheritdoc />
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            yield return Code;
+            yield return Message;
         }
     }
 }
